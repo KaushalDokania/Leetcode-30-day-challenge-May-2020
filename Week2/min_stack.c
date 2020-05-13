@@ -1,69 +1,81 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct MinStack{
+typedef struct MinStk{
     int data;
-    int min;
-    struct MinStack* next;
-} MinStack;
+    struct MinStk* next;
+} MinStk;
 
+typedef MinStk* MinStack;
 /** initialize your data structure here. */
+MinStk *min_stk = NULL;
+int min_data = INT_MAX;;
 
-void printStack(MinStack* obj) {
-  MinStack* p = NULL;
-  printf("\nMinStack: [ ");
-  for (p=obj; p; p=p->next) {
+void printStack(MinStk **obj) {
+  MinStk *p = NULL;
+  printf("MinStack: [ ");
+  for (p=*obj; p; p=p->next) {
       printf("%d->", p->data);
   }
-  printf("]");
+  printf("]\n");
 }
 
-MinStack* minStackCreate() {
-    MinStack* min_stk = (MinStack*)malloc(sizeof(MinStack));
-    min_stk->next = NULL;
-    min_stk->data = -1;
-    min_stk->min = INT_MIN;
-    return min_stk;
+MinStk** minStackCreate() {
+    //min_stk = (MinStk*)malloc(sizeof(MinStk));
+    // min_stk->data = 0;
+    // printf("After Create, ");printStack(&min_stk);
+    return &min_stk;
 }
 
-void minStackPush(MinStack **obj, int x) {
-  MinStack* node = (MinStack*)malloc(sizeof(MinStack));
-  printf(">");printStack(obj);
+void minStackPush(MinStk **obj, int x) {
+  MinStk* node = (MinStk*)malloc(sizeof(MinStk));
+  printf("Before push, ");printStack(obj);
   node->data = x;
   node->next = *obj;
   *obj = node;
-  printf(">>");printStack(obj);
+  if(x < min_data)
+    min_data = x;
+  printf("After push, ");printStack(obj);
 }
 
-void minStackPop(MinStack* obj) {
+void minStackPop(MinStk **obj) {
+  MinStk *top = *obj;
+  *obj = top->next;
+  free(top);
+}
+
+int minStackTop(MinStk **obj) {
+  int data = (*obj)->data;
+  if (data)
+}
+
+int minStackGetMin(MinStk **obj) {
   
 }
 
-int minStackTop(MinStack* obj) {
-  
-}
-
-int minStackGetMin(MinStack* obj) {
-  
-}
-
-void minStackFree(MinStack* obj) {
+void minStackFree(MinStk **obj) {
     
 }
 
 int main() {
-    MinStack* obj = minStackCreate();
-    obj->data = 100;
-    printStack(obj);
-    minStackPush(&obj, 10);
-    printf("+");printStack(obj);
-    minStackPush(&obj, 4);
-    minStackPush(&obj, 13);
-    printStack(obj);
-    // minStackPop(obj);
-    // minStackPop(obj);
-    // minStackPush(obj, 2);
-    // minStackPush(obj, 29);
+    //MinStack *stk = minStackCreate();MinStack **obj = &stk;
+    //MinStk **obj = minStackCreate();
+    MinStack *obj = minStackCreate();
+    printf("Created stack, ");printStack(obj);printf("\n");
+
+    minStackPush(obj, 101);
+    printf("pushed, ");printStack(obj);printf("\n");
+
+    minStackPush(obj, 4);
+    printf("pushed, ");printStack(obj);printf("\n");
+
+    minStackPush(obj, 13);
+    printf("pushed, ");printStack(obj);printf("\n");
+
+    minStackPop(obj);
+    printf("popped, ");printStack(obj);printf("\n");
+
+    printf("top: %d", minStackTop(obj));
 }
 /**
  * Your MinStack struct will be instantiated and called as such:
